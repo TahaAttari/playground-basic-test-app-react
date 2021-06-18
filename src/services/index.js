@@ -8,10 +8,8 @@ export const getPatients = (query=undefined) => {
   if(query){
     let queryString = "?"
     for (const [key,value] of Object.entries(query)){
-      console.log(query)
       queryString += `${key}=${value},`
     }
-    console.log(queryString)
     return axios.get("/Patient"+ queryString);
   }
   else{

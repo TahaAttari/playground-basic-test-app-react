@@ -6,7 +6,8 @@ class Table extends Component {
   state = {
     patients: [],
     birthdate: "",
-    name:""
+    name:"",
+    accessedOn:""
   };
 
   handleChange = (event) => {
@@ -16,12 +17,14 @@ class Table extends Component {
 
   componentDidMount() {
     getPatients().then((res) => {
-      this.setState((state)=>({...state, patients: this.flattenPatientObj(res) }));
+        let now = new Date()
+        let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
+        this.setState((state)=>({...state, patients: this.flattenPatientObj(res) , accessedOn}));
     });
   }
-  shouldComponentUpdate(nextProps,nextState){
-      return this.state.patients !== nextState.patients
-  }
+//   shouldComponentUpdate(nextProps,nextState){
+//       return this.state.patients !== nextState.patients
+//   }
 
   flattenPatientObj = (response) => {
     return (response.data.entry || []).map((item) => {
@@ -30,7 +33,7 @@ class Table extends Component {
         id: item.resource.id,
         name: (name.length>0)?`${((name[0] || {}).given || []).join(" ")} ${(name[0] || {}).family}`:"",
         gender: item.resource.gender,
-        dob: item.resource.birthdate,
+        dob: item.resource.birthDate,
       };
     });
   }
@@ -39,6 +42,7 @@ class Table extends Component {
     const { patients } = this.state;
     return (
         <>
+        {this.state.accessedOn&&(<p>Results as of {this.state.accessedOn}</p>)}
       <table>
         <thead>
           <tr>
@@ -52,11 +56,13 @@ class Table extends Component {
                             query = {...query,name:this.state.name}
                         }
                         if(this.state.birthdate){
-                            query = {...query,birthdate:this.state.birthdate}
+                            query = {...query,birthdate:this.state.birthdate.toISOString().split('T')[0]}
                         }
                     }
                     getPatients(query).then((res) => {
-                        this.setState((state)=>({...state, patients: this.flattenPatientObj(res) }));
+                        let now = new Date()
+                        let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
+                        this.setState((state)=>({...state, patients: this.flattenPatientObj(res), accessedOn }));
                       });
                 }}
                 >
@@ -74,8 +80,9 @@ class Table extends Component {
             <DatePicker 
             format={'yy-MM-dd'}
             value={this.state.birthdate} 
+            maxDate={new Date()}
             onChange={(date) => {
-                this.setState((state)=>({...state, birthdate:date.toISOString()}))
+                this.setState((state)=>({...state, birthdate:date}))
                 }} />
             </th>
           </tr>

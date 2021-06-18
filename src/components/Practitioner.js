@@ -1,18 +1,22 @@
-import React, { Component } from "react";
+import React, { Component, useState,useEffect } from "react";
 import { getPractitioners } from "../services";
+import PractitionerCard from "./PractitionerCard";
 
-class Practitioner extends Component {
-  state = {
-    practitioners: [],
-  };
+function Practitioner(){
 
-  componentDidMount() {
+  const [practitioners,setPractioners] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(()=>{
+    setLoading(true)
+
     getPractitioners().then((res) => {
-      this.setState({ practitioners: this.flattenPractitionerObj(res) });
+      setPractioners(flattenPractitionerObj(res));
+      setLoading(false)
     });
-  }
 
-  flattenPractitionerObj = (response) => {
+  },[])
+
+  let flattenPractitionerObj = (response) => {
     return (response.data.entry || []).map((item) => {
       const name = item.resource.name || [];
       return {
@@ -27,11 +31,15 @@ class Practitioner extends Component {
       };
     });
   };
-
-  render() {
-    const { practitioners } = this.state;
+  if(!loading){
     return (
-      <table>
+      <>
+      {practitioners.map((practitioner)=>{
+        return <PractitionerCard
+        props={practitioner}
+        />
+      })}
+      {/* <table>
         <thead>
           <tr>
             <th>Profile Image</th>
@@ -56,8 +64,14 @@ class Practitioner extends Component {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+      </>
     );
+  }
+  else{
+    return (
+      <h1>Loading...</h1>
+    )
   }
 }
 
