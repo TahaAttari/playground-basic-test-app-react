@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
-import { getPatients } from "../services";
+import React, { useState } from "react";
 import questionnaire from '../assets/questionnaire.json'
 import DatePicker from 'react-date-picker';
 
@@ -9,7 +8,7 @@ function Questionnaire() {
     const initForm = (questionnaire) => {
         let _formData = {}
         for(const item of questionnaire.item){
-            if(item.type=='group'){
+            if(item.type==='group'){
                 _formData[item.linkId] = {}
                 for(const subitem of item.item){
                     _formData[item.linkId][subitem.linkId] = "";
@@ -22,6 +21,7 @@ function Questionnaire() {
         return _formData
     }
     const [formData, setFormData] = useState(initForm(questionnaire));
+    //TODO : extend this to cover all possible values
     const ValueDict = {
         boolean:'valueBoolean',
         date:'valueDate',
@@ -94,10 +94,10 @@ function Questionnaire() {
             <form>
         {questionnaire.item.map((item)=>{
             if(item.type!=='group'){
-                if(item.type=='boolean'){
+                if(item.type==='boolean'){
                     return createBooleanInput(item)
                 }
-                else if(item.type=='date'){
+                else if(item.type==='date'){
                     return createDateInput(item)
                 }
                 else {
@@ -111,10 +111,10 @@ function Questionnaire() {
                     >
                         <h3>{item.text}</h3>
                         {item.item.map((subitem)=>{
-                            if(subitem.type=='boolean'){
+                            if(subitem.type==='boolean'){
                                 return createBooleanInput(subitem,item.linkId)
                             }
-                            else if(subitem.type=='date'){
+                            else if(subitem.type==='date'){
                                 return createDateInput(subitem,item.linkId)
                             }
                             else{
@@ -174,9 +174,9 @@ function Questionnaire() {
             Submit
         </button>
         </div>
-        <code>
-        {JSON.stringify(response,null,4)}
-        </code>
+        <pre>
+        {JSON.stringify(response,null,2)}
+        </pre>
         </>
     )
 }

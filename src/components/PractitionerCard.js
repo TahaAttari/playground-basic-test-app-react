@@ -1,5 +1,4 @@
-import React, { Component, useState,useEffect } from "react";
-import ErrorBoundary from "./ErrorBoundary";
+import React from "react";
 function PractitionerCard({props}){
     let data = {}
     for(const [key,value] of Object.entries(props)){
@@ -11,10 +10,7 @@ function PractitionerCard({props}){
         }
     }
     return(
-        <ErrorBoundary>
-                    <div
-        
-        >
+        <div>
             <img
                   src={data.photo}
                   alt="Avatar"
@@ -24,8 +20,14 @@ function PractitionerCard({props}){
             <p>Gender : {data.gender}</p>
             <p>DOB : {data.dob}</p>
             <code>{data.id}</code>
+            <button
+            onClick={()=>{
+                props.delete(props.id)
+            }}
+            >
+                Delete
+            </button>
         </div>
-        </ErrorBoundary>
     )
 }
 export default PractitionerCard
