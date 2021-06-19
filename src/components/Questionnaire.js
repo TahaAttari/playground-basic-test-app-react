@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import questionnaire from '../assets/questionnaire.json'
 import DatePicker from 'react-date-picker';
+import BooleanInput from "./BooleanInput";
+import StringInput from "./StringInput";
+import DateInput from "./DateInput";
+import "./Questionnaire.css";
+
 
 function Questionnaire() {
     const [validationSchema, setValidationSchema] = useState({});
@@ -27,81 +32,33 @@ function Questionnaire() {
         date:'valueDate',
         string:'valueString'
     }
-    let createStringInput = (item, parent=undefined)=>(
-        <div
-        key={item.linkId}
-        >
-        <label>{item.text}</label>
-        <input
-         
-        value={parent?formData[parent][item.linkId]:formData[item.linkId]}
-        type={'text'}
-        onChange={(event)=>{
-            let text = event.target.value
-            if(parent){
-                setFormData({...formData,[parent]:{...formData[parent], [item.linkId]:text}})
-            }
-            else{
-                setFormData({...formData,[item.linkId]:text})
-            }
-        }}
-        ></input>
-        </div>
-    )
-    let createBooleanInput = (item, parent=undefined)=>(
-        <div
-        key={item.linkId}
-        value={parent?formData[parent][item.linkId]:formData[item.linkId]}
-        onChange={(event)=>{
-            let text = event.target.value
-            if(parent){
-                setFormData({...formData,[parent]:{...formData[parent], [item.linkId]:text}})
-            }
-            else{
-                setFormData({...formData,[item.linkId]:text})
-            }
-        }}
-        >
-        <label>{item.text}</label>
-        <input type="radio" value="true" name={item.linkId} /> Yes
-        <input type="radio" value="false" name={item.linkId} /> No
-        </div>
-    )
-    let createDateInput = (item, parent)=>(
-        <div
-        key={item.linkId}
-        >
-        <label>{item.text}</label>
-        <DatePicker 
-        format={'yy-MM-dd'}
-        value={parent?formData[parent][item.linkId]:formData[item.linkId]} 
-        maxDate={new Date()}
-        onChange={(date)=>{
-            if(parent){
-                setFormData({...formData,[parent]:{...formData[parent], [item.linkId]:date}})
-            }
-            else{
-                setFormData({...formData,[item.linkId]:date})
-            }
-        }}
-            />
-        </div>
-    )
 
     return(
-        <>
+        <main>
         <div>
             <form>
         {questionnaire.item.map((item)=>{
             if(item.type!=='group'){
                 if(item.type==='boolean'){
-                    return createBooleanInput(item)
+                    return <BooleanInput
+                    formData={formData}
+                    setFormData={setFormData}
+                    item={item}
+                    />
                 }
                 else if(item.type==='date'){
-                    return createDateInput(item)
+                    return <DateInput
+                    formData={formData}
+                    setFormData={setFormData}
+                    item={item}
+                    />
                 }
                 else {
-                    return createStringInput(item)
+                    return <StringInput
+                    formData={formData}
+                    setFormData={setFormData}
+                    item={item}
+                    />
                 }
             }
             else{
@@ -112,13 +69,28 @@ function Questionnaire() {
                         <h3>{item.text}</h3>
                         {item.item.map((subitem)=>{
                             if(subitem.type==='boolean'){
-                                return createBooleanInput(subitem,item.linkId)
+                                return <BooleanInput
+                                formData={formData}
+                                setFormData={setFormData}
+                                item={subitem}
+                                parent={item.linkId}
+                                />
                             }
                             else if(subitem.type==='date'){
-                                return createDateInput(subitem,item.linkId)
+                                return <DateInput
+                                formData={formData}
+                                setFormData={setFormData}
+                                item={subitem}
+                                parent={item.linkId}
+                                />
                             }
                             else{
-                                return createStringInput(subitem,item.linkId)
+                                return <StringInput
+                                formData={formData}
+                                setFormData={setFormData}
+                                item={subitem}
+                                parent={item.linkId}
+                                />
                             }
 
                         })}
@@ -129,6 +101,8 @@ function Questionnaire() {
         
             </form>
             <button
+            className="submit"
+            style={{width:'100%'}}
         onClick={()=>{
             let response = {
                 status:'completed',
@@ -138,28 +112,48 @@ function Questionnaire() {
             }
             for(const item of questionnaire.item){
                 if(item.type!=='group'){
-                    response.item.push(
-                        {
-                            linkId:item.linkId,
-                            text:item.text,
-                            answer:{
-                                [ValueDict[item.type]]:formData[item.linkId]
+                    if(formData[item.linkId]){
+                        response.item.push(
+                            {
+                                linkId:item.linkId,
+                                text:item.text,
+                                answer:{
+                                    [ValueDict[item.type]]:formData[item.linkId]
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
+                    else{
+                        response.item.push(
+                            {
+                                linkId:item.linkId,
+                                text:item.text,
+                            }
+                        )
+                    }
                 }
                 else{
                     let groupItem = []
                     for(const subItem of item.item){
-                        groupItem.push(
-                            {
-                                linkId:subItem.linkId,
-                                text:subItem.text,
-                                answer:{
-                                    [ValueDict[subItem.type]]:formData[item.linkId][subItem.linkId]
+                        if(formData[item.linkId][subItem.linkId]){
+                            groupItem.push(
+                                {
+                                    linkId:subItem.linkId,
+                                    text:subItem.text,
+                                    answer:{
+                                        [ValueDict[subItem.type]]:formData[item.linkId][subItem.linkId]
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
+                        else{
+                            groupItem.push(
+                                {
+                                    linkId:subItem.linkId,
+                                    text:subItem.text,
+                                }
+                            )
+                        }
                     }
                     response.item.push({
                         linkId:item.linkId,
@@ -177,7 +171,7 @@ function Questionnaire() {
         <pre>
         {JSON.stringify(response,null,2)}
         </pre>
-        </>
+        </main>
     )
 }
 

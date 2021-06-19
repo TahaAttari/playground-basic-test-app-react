@@ -1,0 +1,11 @@
+*[class*='wrapper']{
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+}
+.radio-input-wrapper{
+    display: flex;
+    width:40%;
+    max-width: 150px;
+}

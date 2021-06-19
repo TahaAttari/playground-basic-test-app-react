@@ -1,17 +1,23 @@
     import React from 'react'
     import {Link} from 'react-router-dom';
+    import './Navbar.css'
+
     const Navbar = () => {
         return(
+            <>
+            <h1>FHIR Test</h1>
+            <div
+            className={'wrapper'}
+            >
             <nav>
-          <h1>
-            <Link to="/">Main</Link>
-          </h1>
           <ul>
-            <li><Link to="/patients">Patients</Link></li>
-            <li><Link to="/practitioners">Practitioners</Link></li>
-            <li><Link to="/questionnaire">Questionnaire</Link></li>
+          <Link to="/patients"><li>Patients</li></Link>
+            <Link to="/practitioners"><li>Practitioners</li></Link>
+            <Link to="/questionnaire"><li>Questionnaire</li></Link>
           </ul>
-        </nav>   
+        </nav>
+        </div>
+        </>   
         )
     }
     export default Navbar;

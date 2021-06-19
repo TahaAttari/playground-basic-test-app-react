@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getPatients } from "../services";
 import DatePicker from 'react-date-picker';
+import './Table.css'
 
 class Table extends Component {
   state = {
@@ -12,7 +13,10 @@ class Table extends Component {
 
   handleChange = (event) => {
       let text = event.target.value
-      this.setState((state)=>({...state, name:text}));
+      var letterNumber = /^[a-zA-Z ]+$/
+      if(text.match(letterNumber) || (text=="")){
+        this.setState((state)=>({...state, name:text}));
+      }
     }
 
   componentDidMount() {
@@ -41,13 +45,27 @@ class Table extends Component {
   render() {
     const { patients } = this.state;
     return (
-        <>
-        {this.state.accessedOn&&(<p>Results as of {this.state.accessedOn}</p>)}
-      <table>
-        <thead>
-          <tr>
-            <th>
+        <main>
+        {this.state.accessedOn&&(<p style={{fontSize:"12px"}}>Results as of {this.state.accessedOn}</p>)}
+        <div className='filter'>
+                <label for='name' >Name filter</label>
+                <input
+            type="text"
+            id="name"
+            value={this.state.name}
+            onChange={this.handleChange}
+            ></input>
+            <label>Date filter</label>
+            <div>
+        <DatePicker 
+            format={'yy-MM-dd'}
+            value={this.state.birthdate} 
+            maxDate={new Date()}
+            onChange={(date) => {
+                this.setState((state)=>({...state, birthdate:date}))
+                }} /></div>
                 <button
+        className='submit'
                 onClick={()=>{
                     let query
                     if(this.state.name||this.state.birthdate){
@@ -66,26 +84,12 @@ class Table extends Component {
                       });
                 }}
                 >
-                    Refresh
+                    Apply Filters
                 </button>
-            </th>
-            <th><input
-            type="text"
-            id="name"
-            // value={this.state.name}
-            onChange={this.handleChange}
-            ></input></th>
-            <th></th>
-            <th>
-            <DatePicker 
-            format={'yy-MM-dd'}
-            value={this.state.birthdate} 
-            maxDate={new Date()}
-            onChange={(date) => {
-                this.setState((state)=>({...state, birthdate:date}))
-                }} />
-            </th>
-          </tr>
+                </div>
+        <div>
+      <table>
+        <thead>
           <tr>
             <th>ID</th>
             <th>Full Name</th>
@@ -101,15 +105,15 @@ class Table extends Component {
           }).map((patient) => (
             <tr key={patient.id}>
               <td>{patient.id}</td>
-              <td>{patient.name?patient.name:""}</td>
-              <td>{patient.gender}</td>
-              <td>{patient.dob}</td>
+              <td>{patient.name?patient.name:"N/A"}</td>
+              <td>{patient.gender?patient.gender:"unknown"}</td>
+              <td>{patient.dob?patient.dob:'N/A'}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      
-      </>
+      </div>
+      </main>
     );
   }
 }

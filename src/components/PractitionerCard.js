@@ -10,17 +10,20 @@ function PractitionerCard({props}){
         }
     }
     return(
-        <div>
+        <div
+        id={data.id}
+        >
             <img
                   src={data.photo}
                   alt="Avatar"
                   style={{ height: 50, width: 50, borderRadius: "50%" }}
                 />
-            <h3>Name : {data.name}</h3>
+            <h3>{data.name}</h3>
             <p>Gender : {data.gender}</p>
             <p>DOB : {data.dob}</p>
             <code>{data.id}</code>
             <button
+            className='delete'
             onClick={()=>{
                 props.delete(props.id)
             }}

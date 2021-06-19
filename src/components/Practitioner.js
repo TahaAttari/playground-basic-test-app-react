@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import { getPractitioners } from "../services";
 import PractitionerCard from "./PractitionerCard";
 import ErrorBoundary from "./ErrorBoundary";
+import './Practitioner.css'
 
 function Practitioner(){
 
@@ -40,23 +41,35 @@ function Practitioner(){
   }
   if(!loading){
     return (
+      <main>
       <ErrorBoundary>
-      {practitioners.map((practitioner)=>{
-        practitioner.delete = (id)=>{
-          deletePractitioner(practitioners,id)
-        }
-        return <PractitionerCard
-        props={practitioner}
-        key={practitioner.id}
-        />
-      })}
-
+        <div className="slider">
+        {practitioners.map((practitioner,i)=>{
+          return (
+            <a href={"#"+practitioner.id}>{i+1}</a>
+          )
+        })}
+        <div className={"slides"}>
+          {practitioners.map((practitioner)=>{
+            practitioner.delete = (id)=>{
+              deletePractitioner(practitioners,id)
+            }
+            return <PractitionerCard
+            props={practitioner}
+            key={practitioner.id}
+            />
+          })}
+          </div>
+        </div>
       </ErrorBoundary>
+      </main>
     );
   }
   else{
     return (
-      <h1>Loading...</h1>
+      <main>
+        <h1>Loading...</h1>
+      </main>
     )
   }
 }
