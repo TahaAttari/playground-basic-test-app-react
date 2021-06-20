@@ -26,6 +26,7 @@ test('Check that label is rendered', async () => {
         expect(screen.getByText('test text')).toBeVisible()
 });
 
+//TODO: find a pattern which allows non-english latters/non-punctuation symbols
 test('Check that purely alphabetic text is recorded', async () => {
     let formData = {}
     let setFormData = (data)=>{

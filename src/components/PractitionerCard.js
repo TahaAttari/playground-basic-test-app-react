@@ -1,6 +1,10 @@
 import React from "react";
-function PractitionerCard({props}){
+import PropTypes from 'prop-types';
+
+
+function PractitionerCard({id,name,dob,gender,photo,del,key}){
     let data = {}
+    let props = {id,name,dob,gender,photo,del,key}
     //clean up undefined/missing values
     for(const [key,value] of Object.entries(props)){
         if(!value){
@@ -26,7 +30,7 @@ function PractitionerCard({props}){
             <button
                 className='delete'
                 onClick={()=>{
-                    props.delete(props.id)
+                    props.del(props.id)
                 }}
             >
                 Delete
@@ -34,4 +38,15 @@ function PractitionerCard({props}){
         </div>
     )
 }
+
+PractitionerCard.propTypes = {
+    id:PropTypes.string,
+    name:PropTypes.string,
+    gender:PropTypes.string,
+    photo:PropTypes.string,
+    del:PropTypes.func,
+    key:PropTypes.string
+}
+
+
 export default PractitionerCard

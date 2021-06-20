@@ -26,7 +26,6 @@ function Practitioner(){
   const [loading, setLoading] = useState(true)
   useEffect(()=>{
     setLoading(true)
-
     getPractitioners().then((res) => {
       setPractioners(flattenPractitionerObj(res));
       setLoading(false)
@@ -44,7 +43,6 @@ function Practitioner(){
   if(!loading){
     return (
       <main>
-      <ErrorBoundary>
         <div className="slider">
         {practitioners.map((practitioner,i)=>{
           return (
@@ -53,17 +51,21 @@ function Practitioner(){
         })}
         <div className={"slides"}>
           {practitioners.map((practitioner)=>{
-            practitioner.delete = (id)=>{
+            practitioner.del = (id)=>{
               deletePractitioner(practitioners,id)
             }
             return <PractitionerCard
-            props={practitioner}
+            id={practitioner.id}
+            name={practitioner.name}
+            gender={practitioner.hender}
+            dob={practitioner.dob}
+            del={practitioner.del}
+            photo={practitioner.photo}
             key={practitioner.id}
             />
           })}
           </div>
         </div>
-      </ErrorBoundary>
       </main>
     );
   }

@@ -27,8 +27,9 @@ class Table extends Component {
 
   handleChange = (event) => {
       let text = event.target.value
-      var letterNumber = /^[a-zA-Z ]+$/
-      if(text.match(letterNumber) || (text=="")){
+      //only allow alpahebetic inputs
+      var lettersOnly = /^[a-zA-Z ]+$/
+      if(text.match(lettersOnly) || (text=="")){
         this.setState({...this.state, name:text});
       }
     }
@@ -37,7 +38,11 @@ class Table extends Component {
     getPatients().then((res) => {
         let now = new Date()
         let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
-        this.setState({...this.state, patients: flattenPatientObj(res) , accessedOn});
+        this.setState({
+            ...this.state, 
+            patients: flattenPatientObj(res) , 
+            accessedOn
+        });
     });
   }
 
@@ -118,6 +123,7 @@ class Table extends Component {
                 </thead>
                 <tbody>
                 {patients.sort((a,b)=>{
+                    //sort from youngest to oldest
                     let dob_a = a.dob?Date.parse(a.dob):-3155760000000
                     let dob_b = b.dob?Date.parse(b.dob):-3155760000000
                     return dob_b-dob_a
