@@ -6,7 +6,7 @@ import Practitioner, {flattenPractitionerObj} from '../Practitioner';
 import { getPractitioners } from "../../services";
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
 
-afterAll(() => {
+afterEach(() => {
     cleanup()
   });
 
@@ -23,8 +23,9 @@ test('Check that all defined Data is visible', async () => {
         <Practitioner 
         />)
     const buttonsVisible = await screen.findAllByRole('button')
-    //20 cards rendered
-    expect(buttonsVisible.length).toBe(20)
+
+    //20 cards rendered per query
+    expect(buttonsVisible.length).toBe(PractitionerData.length)
 
     //text does exist but can't be found
     //for some reason

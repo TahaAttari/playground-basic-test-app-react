@@ -8,7 +8,7 @@ beforeEach(() => {
       return {};
     }
   });
-afterAll(() => {
+afterEach(() => {
     cleanup()
   });
 

@@ -5,7 +5,7 @@ import {act} from 'react-dom/test-utils'
 import PractitionerCard from '../PractitionerCard';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
 
-afterAll(() => {
+afterEach(() => {
     cleanup()
   });
 

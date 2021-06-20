@@ -6,7 +6,7 @@ import {act} from 'react-dom/test-utils'
 import Navbar from '../Navbar';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
 
-afterAll(() => {
+afterEach(() => {
     cleanup()
   });
 

@@ -3,7 +3,7 @@ import { render,cleanup } from '@testing-library/react';
 import Questionnaire from '../Questionnaire';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
 
-afterAll(() => {
+afterEach(() => {
   cleanup()
 });
 

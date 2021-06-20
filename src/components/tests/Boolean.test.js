@@ -5,7 +5,7 @@ import {act} from 'react-dom/test-utils'
 import BooleanInput from '../BooleanInput';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
 
-afterAll(() => {
+afterEach(() => {
     cleanup()
   });
 

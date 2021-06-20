@@ -11,11 +11,11 @@ beforeEach(() => {
       return {};
     }
   });
-  afterAll(() => {
+  afterEach(() => {
     cleanup()
   });
 
-
+//fails randomly on certain values like "undefined"
 test('Check that data is visible', async () => {
     let res = await getPatients()
     let PatientData = flattenPatientObj(res)
