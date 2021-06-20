@@ -26,7 +26,7 @@ main > div {
 p{
     text-align: center;
 }
-.filter{
+.filter, .filter form{
     display: grid;
     width: 80%;
     margin: 0 auto;

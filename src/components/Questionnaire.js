@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import questionnaire from '../assets/questionnaire.json'
 import DatePicker from 'react-date-picker';
 import BooleanInput from "./BooleanInput";
@@ -8,8 +8,8 @@ import "./Questionnaire.css";
 
 
 function Questionnaire() {
-    const [validationSchema, setValidationSchema] = useState({});
     const [response, setResponse] = useState({});
+    const formRef = useRef()
     const initForm = (questionnaire) => {
         let _formData = {}
         for(const item of questionnaire.item){
@@ -32,12 +32,15 @@ function Questionnaire() {
         date:'valueDate',
         string:'valueString'
     }
-
-    return(
-        <main>
-        <div>
-            <form>
-        {questionnaire.item.map((item)=>{
+    let GenerateQuestions = (questions)=>{
+        return questions.map((item)=>{
+            //to fully follow the Questionnaire spec
+            //a recursive function would be best to
+            //properly deal with nested Groups.
+            //
+            //Avoided writing one here to keep the
+            //code as simple as possible since this 
+            //is sufficient for the test data.
             if(item.type!=='group'){
                 if(item.type==='boolean'){
                     return <BooleanInput
@@ -93,17 +96,17 @@ function Questionnaire() {
                                 />
                             }
 
-                        })}
+                            })
+                        }
+    
                     </div>
                 )
             }
-        })}
-        
-            </form>
-            <button
-            className="submit"
-            style={{width:'100%'}}
-        onClick={()=>{
+        })
+    }
+    let SubmitQuestionnaire = ()=>{
+        //check if any inputs are invalid in the questionnaire
+        if(formRef.current.checkValidity()){    
             let response = {
                 status:'completed',
                 questionnaire:questionnaire.url,
@@ -112,6 +115,8 @@ function Questionnaire() {
             }
             for(const item of questionnaire.item){
                 if(item.type!=='group'){
+                    //if there's no response, omit the 
+                    //answer key entirely to make it unambiguous
                     if(formData[item.linkId]){
                         response.item.push(
                             {
@@ -136,6 +141,8 @@ function Questionnaire() {
                     let groupItem = []
                     for(const subItem of item.item){
                         if(formData[item.linkId][subItem.linkId]){
+                        //if there's no response, omit the 
+                        //answer key entirely to make it unambiguous
                             groupItem.push(
                                 {
                                     linkId:subItem.linkId,
@@ -163,14 +170,31 @@ function Questionnaire() {
                 }
             }
             setResponse(response)
-        }}
-        >
-            Submit
-        </button>
-        </div>
-        <pre>
-        {JSON.stringify(response,null,2)}
-        </pre>
+        }
+        else{
+            setResponse('Please check data validity')
+        }
+    }
+
+    return(
+        <main>
+            <div>
+                <form
+                ref={formRef}
+                >
+                    {GenerateQuestions(questionnaire.item)}
+                </form>
+                <button
+                    className="submit"
+                    style={{width:'100%'}}
+                    onClick={()=>{SubmitQuestionnaire()}}
+                >
+                Submit
+                </button>
+            </div>
+            <pre>
+                {JSON.stringify(response,null,2)}
+            </pre>
         </main>
     )
 }
