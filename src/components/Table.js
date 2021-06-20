@@ -3,35 +3,7 @@ import { getPatients } from "../services";
 import DatePicker from 'react-date-picker';
 import './Table.css'
 
-class Table extends Component {
-  state = {
-    patients: [],
-    birthdate: "",
-    name:"",
-    accessedOn:"",
-    inValid:false
-  };
-
-  handleChange = (event) => {
-      let text = event.target.value
-      var letterNumber = /^[a-zA-Z ]+$/
-      if(text.match(letterNumber) || (text=="")){
-        this.setState((state)=>({...state, name:text}));
-      }
-    }
-
-  componentDidMount() {
-    getPatients().then((res) => {
-        let now = new Date()
-        let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
-        this.setState((state)=>({...state, patients: this.flattenPatientObj(res) , accessedOn}));
-    });
-  }
-//   shouldComponentUpdate(nextProps,nextState){
-//       return this.state.patients !== nextState.patients
-//   }
-
-  flattenPatientObj = (response) => {
+export const flattenPatientObj = (response) => {
     return (response.data.entry || []).map((item) => {
       const name = item.resource.name || [];
       return {
@@ -40,6 +12,32 @@ class Table extends Component {
         gender: item.resource.gender,
         dob: item.resource.birthDate,
       };
+    });
+}
+
+class Table extends Component {
+  state = {
+    patients: [],
+    birthdate: "",
+    name:"",
+    accessedOn:"",
+    inValid:false,
+    refresh_disabled:false
+  };
+
+  handleChange = (event) => {
+      let text = event.target.value
+      var letterNumber = /^[a-zA-Z ]+$/
+      if(text.match(letterNumber) || (text=="")){
+        this.setState({...this.state, name:text});
+      }
+    }
+
+  componentDidMount() {
+    getPatients().then((res) => {
+        let now = new Date()
+        let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
+        this.setState({...this.state, patients: flattenPatientObj(res) , accessedOn});
     });
   }
 
@@ -51,7 +49,7 @@ class Table extends Component {
                 <form 
                 ref={form => this.formEl = form}
                 className="filter">
-                    <label>Name filter</label>
+                    <label htmlFor='name'>Name filter</label>
                     <input
                         type="text"
                         id="name"
@@ -66,17 +64,19 @@ class Table extends Component {
                             maxDate={new Date()}
                             minDate={new Date('1900-01-01')}
                             onChange={(date) => {
-                                this.setState((state)=>({...state, birthdate:date}))
+                                this.setState({...this.state, birthdate:date})
                                 }} />
                     </div>
                 </form>
                 <button
                     className='submit'
+                    disabled={this.state.refresh_disabled}
                     onClick={()=>{
                         if(this.formEl.checkValidity()){
                             this.setState({
                                 ...this.state,
-                                inValid:false
+                                inValid:false,
+                                refresh_disabled:true
                             })
                             let query
                             if(this.state.name||this.state.birthdate){
@@ -91,7 +91,10 @@ class Table extends Component {
                             getPatients(query).then((res) => {
                                 let now = new Date()
                                 let accessedOn = now.toDateString() + ' at ' + now.toTimeString()
-                                this.setState((state)=>({...state, patients: this.flattenPatientObj(res), accessedOn }));
+                                this.setState({...this.state, patients: flattenPatientObj(res), accessedOn,refresh_disabled:false });
+                            },(error)=>{
+                                console.warn(error)
+                                this.setState({...this.state,refresh_disabled:false})
                             });
                         }
                         else{

@@ -1,6 +1,7 @@
 import React from "react";
 function PractitionerCard({props}){
     let data = {}
+    //clean up undefined/missing values
     for(const [key,value] of Object.entries(props)){
         if(!value){
             data[key]="N/A"
@@ -14,19 +15,19 @@ function PractitionerCard({props}){
         id={data.id}
         >
             <img
-                  src={data.photo}
-                  alt="Avatar"
-                  style={{ height: 50, width: 50, borderRadius: "50%" }}
-                />
+                src={data.photo}
+                alt="Avatar"
+                className='avatar'
+            />
             <h3>{data.name}</h3>
             <p>Gender : {data.gender}</p>
             <p>DOB : {data.dob}</p>
             <code>{data.id}</code>
             <button
-            className='delete'
-            onClick={()=>{
-                props.delete(props.id)
-            }}
+                className='delete'
+                onClick={()=>{
+                    props.delete(props.id)
+                }}
             >
                 Delete
             </button>

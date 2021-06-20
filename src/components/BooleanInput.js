@@ -26,8 +26,10 @@ function BooleanInput({formData,setFormData,item,parent=undefined}) {
                     className="radio-input"
                     type="radio" 
                     value="true" 
+                    id={item.linkId+'-true'}
                     name={item.linkId} /> 
                 <label 
+                    htmlFor={item.linkId+'-true'}
                     className='radio-label'>
                     Yes
                 </label>
@@ -35,8 +37,12 @@ function BooleanInput({formData,setFormData,item,parent=undefined}) {
                     className="radio-input"
                     type="radio" 
                     value="false" 
+                    id={item.linkId+'-false'}
                     name={item.linkId} />
-                <label className='radio-label'>
+                <label 
+                className='radio-label'
+                htmlFor={item.linkId+'-false'}
+                >
                     No
                 </label>
             </div>

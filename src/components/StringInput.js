@@ -8,13 +8,16 @@ function StringInput({formData,setFormData,item,parent=undefined}) {
             className="string-input-wrapper"
         >
             <label
+                htmlFor={item.linkId}
                 className="string-input-label">
                 {item.text}
             </label>
             <input
+                id={item.linkId}
                 className="string-input"
                 value={parent?formData[parent][item.linkId]:formData[item.linkId]}
                 type={'text'}
+                pattern={"[a-zA-Z ]*"}
                 onChange={(event)=>{
                     let text = event.target.value
                     var letterNumber = /^[a-zA-Z ]+$/

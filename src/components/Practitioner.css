@@ -85,6 +85,11 @@ img {
 .slider > a:focus {
   background: #000;
 }
+.avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%
+}
 
 /* Don't need button navigation */
 @supports (scroll-snap-type) { 
