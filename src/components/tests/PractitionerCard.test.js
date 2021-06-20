@@ -1,9 +1,14 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react'
+import {render, screen, cleanup} from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import {act} from 'react-dom/test-utils'
 import PractitionerCard from '../PractitionerCard';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
+
+afterAll(() => {
+    cleanup()
+  });
+
 
 // test('Check that all Data is visible', async () => {
 //     let test = 'not deleted'

@@ -1,7 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render,cleanup } from '@testing-library/react';
 import Questionnaire from '../Questionnaire';
 import * as questionnaireTemplate from '../../assets/questionnaire.json'
+
+afterAll(() => {
+  cleanup()
+});
+
 
 test('All question text is rendered', () => {
   const { getByText } = render(<Questionnaire />);
